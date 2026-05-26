@@ -32,7 +32,6 @@ Siguiendo las directrices del docente, los requerimientos han sido validados baj
 | :--- | :--- | :--- | :--- |
 | **RF-NEW-02** | Indicador ratio TC/TP en dashboard | Mostrar el porcentaje de docentes TC vs. TP/Horas asignados en el horario actual (mínimo legal: 25% TC según Art. 82 Ley 30220). | **S**: Cumplimiento normativo. **M**: % visible en dashboard. **T**: MVP. |
 | **RF-NEW-04** | Tipo de contrato docente | Registrar si el docente es Tiempo Completo (TC), Tiempo Parcial (TP) o Por Horas. | **S**: Datos docentes. **M**: Campo `contract_type` en DB. **T**: MVP. |
-| **RF-NEW-05** | Alerta de límite legal de horas | El sistema debe alertar si un docente supera su límite semanal: TC ≤ 8 h lectivas, TP ≤ 6 h (Ley 30220, Art. 84). | **S**: Validación legal. **M**: Alerta visible al asignar. **T**: MVP. |
 | **RF-NEW-06** | Categoría docente | Registrar la categoría ordinaria: Principal, Asociado, Auxiliar, Contratado o Jefe de Práctica. | **S**: Datos docentes. **M**: Campo `category` en DB. **T**: MVP. |
 | **RF-NEW-09** | Capacidad física vs. aforo autorizado | Distinguir entre capacidad física del aula y el aforo máximo autorizado por SUNEDU (1.2 m²/alumno). | **S**: Recursos físicos. **M**: Columna `authorized_capacity` en DB. **T**: MVP. |
 | **RF-NEW-14** | Ciclo académico por curso | Indicar a qué ciclo pertenece cada curso (1ro al 10mo) para evitar choques entre cursos del mismo ciclo. | **S**: Malla académica. **M**: Columna `cycle` en DB. **T**: MVP. |
