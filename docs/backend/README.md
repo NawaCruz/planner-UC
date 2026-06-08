@@ -8,7 +8,7 @@ Este directorio contiene 3 documentos:
 
 1. **README.md** (este archivo) - Información general y breve
 2. **[SCHEDULING_DEMO_ORTOOLS_EXPLAINED.md](SCHEDULING_DEMO_ORTOOLS_EXPLAINED.md)** - Explicación detallada del algoritmo
-3. **[TESTING.md](TESTING.md)** - Guía de pruebas implementadas
+3. **[TEST_DOC.md](TEST_DOC.md)** - Resumen de pruebas implementadas, cobertura y evidencias
 
 ---
 
@@ -80,25 +80,24 @@ Minimizar = 10000×(demanda_no_cubierta)
 | **Servidor**  | ✅ Funcional   |
 | **Solver**    | ✅ Funcional   |
 | **API**       | ✅ 2 endpoints |
-| **Pruebas**   | ✅ 6 tests     |
+| **Pruebas**   | ✅ 37 tests    |
 | **Demo Data** | ✅ Incluido    |
 
 ---
 
 ## 🧪 Pruebas Implementadas
 
-**Total**: 6 tests (100% pasando)
+**Total**: 37 tests aprobados
 
-| Test                                    | Propósito                         |
-| --------------------------------------- | --------------------------------- |
-| `test_read_root`                        | Endpoint raíz funciona            |
-| `test_scheduling_demo_endpoint`         | API responde validamente          |
-| `test_scheduling_demo_success_response` | Estructura de respuesta correcta  |
-| `test_solver_finds_feasible_solution`   | Solver encuentra solución         |
-| `test_solution_structure`               | Estructura de salida correcta     |
-| `test_solution_metrics_consistency`     | Métricas lógicamente consistentes |
+Cobertura principal:
 
-Detalles completos en [TESTING.md](TESTING.md)
+- endpoints `GET /` y `GET /api/scheduling-demo`
+- solver y restricciones principales
+- helpers internos
+- edge cases
+- manejo de errores del endpoint
+
+Detalles completos en [TEST_DOC.md](TEST_DOC.md)
 
 ---
 
@@ -112,7 +111,7 @@ Detalles completos en [TESTING.md](TESTING.md)
 ### Servidor FastAPI
 
 ```powershell
-cd Backend
+cd backend
 uv run uvicorn app.main:app --reload
 ```
 
@@ -124,21 +123,22 @@ Acceso:
 ### Demo por Consola
 
 ```powershell
-cd Backend
+cd backend
 uv run python main.py
 ```
 
 ### Pruebas
 
 ```powershell
-cd Backend
-uv run pytest tests/ -v
+cd backend
+uv run pytest
 ```
 
 Con cobertura:
 
 ```powershell
-uv run pytest tests/ --cov=app --cov-report=html
+cd backend
+uv run pytest --cov=app --cov-report=term-missing --cov-report=html
 ```
 
 ---
@@ -146,14 +146,16 @@ uv run pytest tests/ --cov=app --cov-report=html
 ## 📁 Estructura del Backend
 
 ```
-Backend/
+backend/
 ├── app/
 │   ├── main.py                  ← Servidor FastAPI
 │   ├── scheduling_demo.py       ← Solver OR-Tools CP-SAT
 │   └── scheduling_demo_data.py  ← Datos de demostración
 ├── tests/
 │   ├── test_api.py              ← Tests de endpoints
-│   └── test_scheduling_algorithm.py ← Tests del solver
+│   ├── test_scheduling_algorithm.py ← Tests del solver
+│   ├── test_scheduling_helpers.py ← Tests de helpers
+│   └── test_scheduling_edge_cases.py ← Tests de edge cases
 ├── pyproject.toml               ← Dependencias
 └── uv.lock                      ← Lock de dependencias
 ```
@@ -165,7 +167,7 @@ Backend/
 Para más detalles, consulta:
 
 - **[SCHEDULING_DEMO_ORTOOLS_EXPLAINED.md](SCHEDULING_DEMO_ORTOOLS_EXPLAINED.md)** - Explicación línea por línea del algoritmo, internals de OR-Tools, variables, restricciones y función objetivo
-- **[TESTING.md](TESTING.md)** - Descripción de cada test, cómo ejecutarlos y troubleshooting
+- **[TEST_DOC.md](TEST_DOC.md)** - Resumen de pruebas, cobertura, evidencias y comandos de ejecución
 
 ---
 

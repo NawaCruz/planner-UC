@@ -37,16 +37,15 @@ export default function DashboardPage() {
                 </p>
               </div>
               
-              {/* Ejemplo de Image nativo con WebP y lazy loading para Green Software */}
+              {/* Imagen optimizada local con WebP y lazy loading para Green Software */}
               <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
                 <Image 
-                  src="https://picsum.photos/400/200" 
-                  alt="Banner decorativo" 
+                  src="/uni.webp" 
+                  alt="Globe del sitio" 
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
+                  className="object-contain p-2"
                   loading="lazy"
-                  unoptimized // Para permitir externos rápidos sin configurar next.config
                 />
               </div>
             </div>

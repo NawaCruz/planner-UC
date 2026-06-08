@@ -1,11 +1,34 @@
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from '@jest/globals'
-import Page from '../page'
+import { render, waitFor } from '@testing-library/react'
+import Page from '@/app/page'
+
+const push = jest.fn()
+const useAuth = jest.fn()
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push,
+  }),
+}))
+
+jest.mock('@/lib/auth/auth-context', () => ({
+  useAuth: () => useAuth(),
+}))
 
 describe('Page', () => {
-  it('renders', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('redirige al login cuando no hay sesión', async () => {
+    useAuth.mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+    })
+
     render(<Page />)
-    // Ajusta este assertion según lo que renderice tu página
-    expect(screen.getByRole('main')).toBeDefined()
+
+    await waitFor(() => {
+      expect(push).toHaveBeenCalledWith('/login')
+    })
   })
 })

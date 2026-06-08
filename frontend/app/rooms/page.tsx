@@ -31,18 +31,24 @@ export default function RoomsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    void loadRooms(page);
-  }, [page]);
+    void loadRooms(page, limit);
+  }, [page, limit]);
 
-  async function loadRooms(currentPage: number = 1) {
+  async function loadRooms(pageNum: number, pageLimit: number) {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/rooms?page=${currentPage}&limit=5`, { cache: 'no-store' });
+      const params = new URLSearchParams({
+        page: String(pageNum),
+        limit: String(pageLimit),
+      });
+      const response = await fetch(`/api/rooms?${params}`, { cache: 'no-store' });
       const data = await response.json();
 
       if (!response.ok) {
@@ -50,7 +56,8 @@ export default function RoomsPage() {
       }
 
       setRooms(data.rooms ?? []);
-      setTotalPages(data.pagination?.totalPages || 1);
+      setTotal(data.pagination?.total ?? 0);
+      setTotalPages(data.pagination?.totalPages ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al cargar aulas');
     } finally {
@@ -99,7 +106,7 @@ export default function RoomsPage() {
 
       setSuccess(editingId ? 'Aula actualizada correctamente.' : 'Aula creada correctamente.');
       resetForm();
-      await loadRooms();
+      await loadRooms(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al guardar');
     } finally {
@@ -132,7 +139,7 @@ export default function RoomsPage() {
       }
 
       setSuccess('Aula eliminada correctamente.');
-      await loadRooms(page);
+      await loadRooms(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al eliminar');
     }
@@ -158,22 +165,18 @@ export default function RoomsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <StatCard label="Aulas" value={String(rooms.length)} />
+                <StatCard label="Aulas" value={String(total)} />
                 <StatCard
-                  label="Activas"
-                  value={String(rooms.filter((room) => room.is_active).length)}
+                  label="En página"
+                  value={String(rooms.length)}
+                />
+                <StatCard
+                  label="Página"
+                  value={`${page} de ${totalPages}`}
                 />
                 <StatCard
                   label="Capacidad total"
                   value={String(rooms.reduce((sum, room) => sum + room.capacity, 0))}
-                />
-                <StatCard
-                  label="Promedio"
-                  value={
-                    rooms.length > 0
-                      ? String(Math.round(rooms.reduce((sum, room) => sum + room.capacity, 0) / rooms.length))
-                      : '0'
-                  }
                 />
               </div>
             </div>
@@ -394,13 +397,32 @@ export default function RoomsPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => void loadRooms()}
-                  className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
-                >
-                  Recargar
-                </button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-slate-600">Por página:</label>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value));
+                        setPage(1);
+                      }}
+                      className="rounded-xl border border-slate-200 bg-white px-2 py-1 text-sm text-slate-900 outline-none transition focus:border-amber-400"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void loadRooms(page, limit)}
+                    className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                  >
+                    Recargar
+                  </button>
+                </div>
               </div>
 
               {loading ? (
@@ -485,27 +507,55 @@ export default function RoomsPage() {
                     </article>
                   ))}
                   
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-between border-t border-slate-200 pt-4">
-                      <button
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                        className="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
-                      >
-                        Anterior
-                      </button>
-                      <span className="text-sm font-medium text-slate-500">
-                        Página {page} de {totalPages}
-                      </span>
-                      <button
-                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                        disabled={page === totalPages}
-                        className="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
-                      >
-                        Siguiente
-                      </button>
+                  {/* Pagination Controls */}
+                  <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm font-medium text-slate-700">
+                        Mostrando {(page - 1) * limit + 1} a {Math.min(page * limit, total)} de {total} aulas
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={page === 1 || loading}
+                          onClick={() => setPage(page - 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          ← Anterior
+                        </button>
+
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: totalPages }).map((_, index) => {
+                            const pageNum = index + 1;
+                            return (
+                              <button
+                                key={pageNum}
+                                type="button"
+                                disabled={loading}
+                                onClick={() => setPage(pageNum)}
+                                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                                  pageNum === page
+                                    ? 'bg-amber-500 text-slate-950'
+                                    : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100'
+                                } disabled:cursor-not-allowed disabled:opacity-50`}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={page === totalPages || loading}
+                          onClick={() => setPage(page + 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Siguiente →
+                        </button>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ) : null}
             </article>

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
 
 from app.scheduling_demo import solve_student_timetable_demo_data
 
@@ -27,4 +28,13 @@ def read_root():
 
 @app.get("/api/scheduling-demo")
 def get_scheduling_demo():
-    return solve_student_timetable_demo_data()
+    try:
+        return solve_student_timetable_demo_data()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "message": f"Error interno al generar el horario: {exc}",
+            },
+        )

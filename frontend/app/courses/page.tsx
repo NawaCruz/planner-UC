@@ -31,17 +31,25 @@ export default function CoursesPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    void loadCourses();
-  }, []);
+    void loadCourses(page, limit);
+  }, [page, limit]);
 
-  async function loadCourses() {
+  async function loadCourses(pageNum: number, pageLimit: number) {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/courses', { cache: 'no-store' });
+      const params = new URLSearchParams({
+        page: String(pageNum),
+        limit: String(pageLimit),
+      });
+      const response = await fetch(`/api/courses?${params}`, { cache: 'no-store' });
       const data = await response.json();
 
       if (!response.ok) {
@@ -49,6 +57,8 @@ export default function CoursesPage() {
       }
 
       setCourses(data.courses ?? []);
+      setTotal(data.pagination?.total ?? 0);
+      setTotalPages(data.pagination?.totalPages ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al cargar cursos');
     } finally {
@@ -103,7 +113,7 @@ export default function CoursesPage() {
         editingId ? 'Curso actualizado correctamente.' : 'Curso creado correctamente.'
       );
       resetForm();
-      await loadCourses();
+      await loadCourses(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al guardar');
     } finally {
@@ -138,7 +148,7 @@ export default function CoursesPage() {
       }
 
       setSuccess('Curso eliminado correctamente.');
-      await loadCourses();
+      await loadCourses(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al eliminar');
     }
@@ -165,18 +175,18 @@ export default function CoursesPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <StatCard label="Cursos" value={String(courses.length)} />
+                <StatCard label="Cursos" value={String(total)} />
                 <StatCard
-                  label="Activos"
-                  value={String(courses.filter((course) => course.is_active).length)}
+                  label="En página"
+                  value={String(courses.length)}
                 />
                 <StatCard
-                  label="Generales"
-                  value={String(courses.filter((course) => course.kind === 'general').length)}
+                  label="Página"
+                  value={`${page} de ${totalPages}`}
                 />
                 <StatCard
-                  label="Carrera"
-                  value={String(courses.filter((course) => course.kind === 'carrera').length)}
+                  label="Por página"
+                  value={String(limit)}
                 />
               </div>
             </div>
@@ -407,13 +417,32 @@ export default function CoursesPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => void loadCourses()}
-                  className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
-                >
-                  Recargar
-                </button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-slate-600">Por página:</label>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value));
+                        setPage(1);
+                      }}
+                      className="rounded-xl border border-slate-200 bg-white px-2 py-1 text-sm text-slate-900 outline-none transition focus:border-emerald-400"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void loadCourses(page, limit)}
+                    className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                  >
+                    Recargar
+                  </button>
+                </div>
               </div>
 
               {loading ? (
@@ -508,6 +537,56 @@ export default function CoursesPage() {
                       </div>
                     </article>
                   ))}
+
+                  {/* Pagination Controls */}
+                  <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm font-medium text-slate-700">
+                        Mostrando {(page - 1) * limit + 1} a {Math.min(page * limit, total)} de {total} cursos
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={page === 1 || loading}
+                          onClick={() => setPage(page - 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          ← Anterior
+                        </button>
+
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: totalPages }).map((_, index) => {
+                            const pageNum = index + 1;
+                            return (
+                              <button
+                                key={pageNum}
+                                type="button"
+                                disabled={loading}
+                                onClick={() => setPage(pageNum)}
+                                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                                  pageNum === page
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100'
+                                } disabled:cursor-not-allowed disabled:opacity-50`}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={page === totalPages || loading}
+                          onClick={() => setPage(page + 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Siguiente →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </article>

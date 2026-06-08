@@ -214,6 +214,189 @@ npm run lint
 npm run test
 ```
 
+```powershell
+npm run test:coverage
+```
+
+```powershell
+npm run cypress:open
+```
+
+```powershell
+npm run cypress:run
+```
+
+```powershell
+npm run cypress:verify
+```
+
+```powershell
+npm run cypress:install
+```
+
+### Estado actual del testing frontend
+
+Actualmente el frontend cuenta con una base de pruebas automatizadas orientada a la consigna de calidad:
+
+- `Jest` como runner de pruebas
+- `React Testing Library` para pruebas de componentes
+- `MSW` para mocking de APIs en pruebas de integracion frontend
+- reportes de cobertura con salida en consola, `lcov` y HTML
+
+Archivos de soporte principales:
+
+- [frontend/jest.config.ts](/e:/Me/2026-1/planner-UC/frontend/jest.config.ts)
+- [frontend/jest.setup.ts](/e:/Me/2026-1/planner-UC/frontend/jest.setup.ts)
+- [frontend/test/msw/server.ts](/e:/Me/2026-1/planner-UC/frontend/test/msw/server.ts)
+- [frontend/test/msw/handlers.ts](/e:/Me/2026-1/planner-UC/frontend/test/msw/handlers.ts)
+
+Cobertura de pruebas implementada en esta etapa:
+
+- `LoginForm`
+- `ProtectedRoute`
+- `CoursesPage`
+- redireccion inicial de `app/page.tsx`
+- `RoomsPage`
+- `UsersPage`
+- `ScheduleGeneratorPage`
+- `AppShell`
+- `TeacherStats`
+- `auth-context`
+- `auth.ts`
+- `role-utils`
+
+Resultado actual de Jest:
+
+- `16` suites aprobadas
+- `45` tests aprobados
+- cobertura global `71.92%`
+
+Los reportes de cobertura se generan en:
+
+- `frontend/coverage/lcov-report/index.html`
+- `frontend/coverage/lcov.info`
+
+Documentación ampliada de pruebas, cobertura y evidencias:
+
+- [docs/frontend/TEST_DOC.md](/e:/Me/2026-1/planner-UC/docs/frontend/TEST_DOC.md)
+
+### Pruebas de aceptación y E2E con Cypress
+
+Se configuró `Cypress` para cubrir la parte de aceptación y E2E de la rúbrica con flujos mínimos del frontend.
+
+Specs implementadas:
+
+- `cypress/e2e/login.cy.ts`
+- `cypress/e2e/courses.cy.ts`
+- `cypress/e2e/schedule-error.cy.ts`
+
+Estas pruebas cubren:
+
+- inicio de sesión
+- navegación funcional
+- creación de curso
+- visualización de éxito
+- manejo de error del schedule generator
+
+Resultado actual de Cypress:
+
+- `3` specs aprobadas
+- `3` tests aprobados
+- `0` fallos
+
+#### Cómo correr Cypress en este proyecto
+
+Para que Cypress no dependa de Supabase real, se agregó un bypass de autenticación solo para E2E mediante la variable:
+
+```env
+NEXT_PUBLIC_E2E_BYPASS_AUTH=true
+```
+
+Ejemplo en PowerShell:
+
+```powershell
+$env:NEXT_PUBLIC_E2E_BYPASS_AUTH='true'
+npm run dev
+```
+
+Luego, en otra terminal:
+
+```powershell
+cd frontend
+npm run cypress:verify
+npm run cypress:open
+```
+
+o
+
+```powershell
+cd frontend
+npm run cypress:run
+```
+
+Credenciales usadas en E2E:
+
+- `admin@example.com`
+- `password123`
+
+#### Verificacion del binario de Cypress
+
+En este entorno se detecto que Windows tenia definida la variable global `ELECTRON_RUN_AS_NODE=1`, lo que hacia que el binario fallara con errores como:
+
+- `Cypress.exe: bad option: --smoke-test`
+- `Cypress.exe: bad option: --ping=...`
+
+Para evitar ese problema, los scripts del proyecto limpian esa variable antes de ejecutar Cypress.
+
+Comandos utiles:
+
+```powershell
+cd frontend
+npm run cypress:install
+npm run cypress:verify
+```
+
+Resultado esperado:
+
+- `Cypress package version: 13.17.0`
+- `Cypress binary version: 13.17.0`
+- `Verified Cypress!`
+
+### Flujo recomendado para correr todo el testing
+
+#### 1. Unitarias e integración
+
+```powershell
+cd frontend
+npm test
+```
+
+#### 2. Cobertura
+
+```powershell
+cd frontend
+npm run test:coverage
+```
+
+#### 3. Cypress
+
+Terminal 1:
+
+```powershell
+cd frontend
+$env:NEXT_PUBLIC_E2E_BYPASS_AUTH='true'
+npm run dev
+```
+
+Terminal 2:
+
+```powershell
+cd frontend
+npm run cypress:install
+npm run cypress:verify
+npm run cypress:run
+```
+
 ## Configuracion de base de datos
 
 El frontend incluye migraciones SQL para Supabase en:

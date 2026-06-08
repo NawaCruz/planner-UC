@@ -1,10 +1,9 @@
 """Tests para las rutas de la API FastAPI."""
 
-import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+from app import main
 
-client = TestClient(app)
+client = TestClient(main.app)
 
 
 def test_read_root():
@@ -41,3 +40,30 @@ def test_scheduling_demo_success_response():
     assert "summary" in data
     assert "course_capacity_summary" in data
     assert "demand_by_course" in data
+
+
+def test_scheduling_demo_handles_solver_failure(monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "solve_student_timetable_demo_data",
+        lambda: {"success": False, "message": "No se encontro solucion"},
+    )
+
+    response = client.get("/api/scheduling-demo")
+
+    assert response.status_code == 200
+    assert response.json() == {"success": False, "message": "No se encontro solucion"}
+
+
+def test_scheduling_demo_handles_internal_exception(monkeypatch):
+    def broken_solver():
+        raise RuntimeError("solver roto")
+
+    monkeypatch.setattr(main, "solve_student_timetable_demo_data", broken_solver)
+
+    response = client.get("/api/scheduling-demo")
+
+    assert response.status_code == 500
+    data = response.json()
+    assert data["success"] is False
+    assert "solver roto" in data["message"]

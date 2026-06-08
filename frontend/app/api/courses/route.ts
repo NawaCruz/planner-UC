@@ -46,24 +46,53 @@ function normalizeCoursePayload(payload: Partial<CourseInput>) {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const auth = await requireAdminAccess();
   if ('error' in auth) {
     return auth.error;
   }
   const adminClient = getAdminClient();
 
+  const searchParams = request.nextUrl.searchParams;
+  const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
+  const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '10')));
+  const offset = (page - 1) * limit;
+
+  // Get total count
+  const { count, error: countError } = await adminClient
+    .from('courses')
+    .select('*', { count: 'exact', head: true });
+
+  if (countError) {
+    return NextResponse.json({ error: countError.message }, { status: 500 });
+  }
+
+  // Get paginated data
   const { data, error } = await adminClient
     .from('courses')
     .select('*')
     .order('cycle', { ascending: true })
-    .order('code', { ascending: true });
+    .order('code', { ascending: true })
+    .range(offset, offset + limit - 1);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ courses: data ?? [] });
+  const total = count ?? 0;
+  const totalPages = Math.ceil(total / limit);
+
+  return NextResponse.json({
+    courses: data ?? [],
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    },
+  });
 }
 
 export async function POST(request: NextRequest) {

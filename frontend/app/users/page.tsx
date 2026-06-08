@@ -45,18 +45,24 @@ export default function UsersPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    void loadUsers(page);
-  }, [page]);
+    void loadUsers(page, limit);
+  }, [page, limit]);
 
-  async function loadUsers(currentPage: number = 1) {
+  async function loadUsers(pageNum: number, pageLimit: number) {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/users?page=${currentPage}&limit=5`, { cache: 'no-store' });
+      const params = new URLSearchParams({
+        page: String(pageNum),
+        limit: String(pageLimit),
+      });
+      const response = await fetch(`/api/users?${params}`, { cache: 'no-store' });
       const data = await response.json();
 
       if (!response.ok) {
@@ -65,7 +71,8 @@ export default function UsersPage() {
 
       setUsers(data.users ?? []);
       setRoles(data.roles ?? []);
-      setTotalPages(data.pagination?.totalPages || 1);
+      setTotal(data.pagination?.total ?? 0);
+      setTotalPages(data.pagination?.totalPages ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al cargar usuarios');
     } finally {
@@ -136,7 +143,7 @@ export default function UsersPage() {
           : 'Usuario creado correctamente.'
       );
       resetForm();
-      await loadUsers();
+      await loadUsers(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al guardar');
     } finally {
@@ -175,7 +182,7 @@ export default function UsersPage() {
       }
 
       setSuccess('Usuario eliminado correctamente.');
-      await loadUsers(page);
+      await loadUsers(page, limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado al eliminar');
     }
@@ -202,18 +209,18 @@ export default function UsersPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <StatCard label="Usuarios" value={String(users.length)} />
+                <StatCard label="Usuarios" value={String(total)} />
+                <StatCard
+                  label="En página"
+                  value={String(users.length)}
+                />
+                <StatCard
+                  label="Página"
+                  value={`${page} de ${totalPages}`}
+                />
                 <StatCard
                   label="Activos"
                   value={String(users.filter((managedUser) => managedUser.is_active).length)}
-                />
-                <StatCard
-                  label="Profesores"
-                  value={String(users.filter((managedUser) => managedUser.role?.name === 'profesor').length)}
-                />
-                <StatCard
-                  label="Alumnos"
-                  value={String(users.filter((managedUser) => managedUser.role?.name === 'alumno').length)}
                 />
               </div>
             </div>
@@ -451,13 +458,32 @@ export default function UsersPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => void loadUsers()}
-                  className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
-                >
-                  Recargar
-                </button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-slate-600">Por página:</label>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value));
+                        setPage(1);
+                      }}
+                      className="rounded-xl border border-slate-200 bg-white px-2 py-1 text-sm text-slate-900 outline-none transition focus:border-fuchsia-400"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void loadUsers(page, limit)}
+                    className="self-start rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                  >
+                    Recargar
+                  </button>
+                </div>
               </div>
 
               {loading ? (
@@ -564,27 +590,55 @@ export default function UsersPage() {
                     );
                   })}
                   
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-between border-t border-slate-200 pt-4">
-                      <button
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                        className="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
-                      >
-                        Anterior
-                      </button>
-                      <span className="text-sm font-medium text-slate-500">
-                        Página {page} de {totalPages}
-                      </span>
-                      <button
-                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                        disabled={page === totalPages}
-                        className="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
-                      >
-                        Siguiente
-                      </button>
+                  {/* Pagination Controls */}
+                  <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm font-medium text-slate-700">
+                        Mostrando {(page - 1) * limit + 1} a {Math.min(page * limit, total)} de {total} usuarios
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={page === 1 || loading}
+                          onClick={() => setPage(page - 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          ← Anterior
+                        </button>
+
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: totalPages }).map((_, index) => {
+                            const pageNum = index + 1;
+                            return (
+                              <button
+                                key={pageNum}
+                                type="button"
+                                disabled={loading}
+                                onClick={() => setPage(pageNum)}
+                                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                                  pageNum === page
+                                    ? 'bg-fuchsia-600 text-white'
+                                    : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100'
+                                } disabled:cursor-not-allowed disabled:opacity-50`}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={page === totalPages || loading}
+                          onClick={() => setPage(page + 1)}
+                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Siguiente →
+                        </button>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ) : null}
             </article>

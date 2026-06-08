@@ -107,6 +107,12 @@ def _build_schedule_solution() -> dict:
                         sections_by_room_slot.setdefault((room.name, slot), []).append(section_key)
                         sections_by_cycle_slot.setdefault((course.cycle, slot), []).append(section_key)
 
+    if not candidate_sections:
+        return {
+            "success": False,
+            "message": "No se encontro una solucion factible para el prototipo.",
+        }
+
     for sections in sections_by_room_slot.values():
         model.Add(sum(section_vars[section] for section in sections) <= 1)
 

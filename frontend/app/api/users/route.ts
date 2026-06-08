@@ -50,10 +50,9 @@ export async function GET(request: NextRequest) {
   const adminClient = getAdminClient();
 
   const searchParams = request.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = parseInt(searchParams.get('limit') || '20', 10);
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
+  const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
+  const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '5')));
+  const offset = (page - 1) * limit;
 
   const [{ data: users, error: usersError, count }, { data: roles, error: rolesError }] =
     await Promise.all([
@@ -74,7 +73,7 @@ export async function GET(request: NextRequest) {
         `, { count: 'exact' }
         )
         .order('created_at', { ascending: false })
-        .range(start, end),
+        .range(offset, offset + limit - 1),
       adminClient
         .from('roles')
         .select('id, name, description')

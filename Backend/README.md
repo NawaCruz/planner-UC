@@ -62,6 +62,46 @@ uv run python main.py
 
 Ese comando imprime una explicacion textual de la solucion encontrada.
 
+## Como correr los tests
+
+Desde la carpeta `backend`:
+
+```powershell
+uv run pytest
+```
+
+Ese comando ejecuta toda la suite backend, incluyendo:
+
+- pruebas de API con `FastAPI TestClient`
+- pruebas del algoritmo de scheduling
+- pruebas unitarias de helpers internos
+- pruebas de edge cases del solver
+
+## Como generar cobertura
+
+Desde la carpeta `backend`:
+
+```powershell
+uv run pytest --cov=app --cov-report=term-missing --cov-report=html
+```
+
+Ese comando:
+
+- muestra la cobertura en consola
+- genera un reporte HTML en `backend/htmlcov`
+
+## Herramientas de testing usadas
+
+- `pytest`
+- `FastAPI TestClient`
+- `pytest-cov`
+
+## Documentacion de testing
+
+El resumen detallado de pruebas implementadas, cobertura, evidencias y comandos de ejecución está en:
+
+- [docs/backend/TEST_DOC.md](/e:/Me/2026-1/planner-UC/docs/backend/TEST_DOC.md)
+
 ## Enfoque algoritmico
 
 El algoritmo usa `OR-Tools CP-SAT`.

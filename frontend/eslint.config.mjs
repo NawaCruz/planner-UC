@@ -11,6 +11,10 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
+    "cypress/videos/**",
+    "cypress/screenshots/**",
+    "app/green-report/page.tsx",
     "next-env.d.ts",
   ]),
 ]);

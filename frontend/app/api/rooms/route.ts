@@ -40,16 +40,15 @@ export async function GET(request: NextRequest) {
   const adminClient = getAdminClient();
 
   const searchParams = request.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = parseInt(searchParams.get('limit') || '20', 10);
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
+  const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
+  const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '5')));
+  const offset = (page - 1) * limit;
 
   const { data, error, count } = await adminClient
     .from('rooms')
-    .select('id, name, location, capacity, authorized_capacity, room_type, is_active, description, created_at, updated_at', { count: 'exact' })
+    .select('*', { count: 'exact' })
     .order('name', { ascending: true })
-    .range(start, end);
+    .range(offset, offset + limit - 1);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
