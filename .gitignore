@@ -10,6 +10,9 @@ build/
 .env.test.local
 .env.production.local
 
+# Supabase CLI local metadata
+frontend/supabase/.temp/
+
 # IDEs
 .vscode/
 .idea/
