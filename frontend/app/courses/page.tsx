@@ -1,14 +1,22 @@
 'use client';
 
 import {
-  InputHTMLAttributes,
-  ReactNode,
-  SelectHTMLAttributes,
+  useCallback,
   useEffect,
-  useState,
 } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
 import { ProtectedRoute } from '@/components/auth/protected-route';
+import {
+  Field,
+  Info,
+  Input,
+  Label,
+  PaginationControls,
+  SectionTitle,
+  Select,
+  StatCard,
+  useCrudPageState,
+} from '@/components/admin/crud-ui';
 import { Course, CourseInput } from '@/types/course';
 
 const initialForm: CourseInput = {
@@ -33,23 +41,9 @@ function getSaveButtonText(saving: boolean, editingId: number | null) {
 }
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [form, setForm] = useState<CourseInput>(initialForm);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const { items: courses, setItems: setCourses, form, setForm, editingId, setEditingId, loading, setLoading, saving, setSaving, error, setError, success, setSuccess, page, setPage, limit, setLimit, total, setTotal, totalPages, setTotalPages } = useCrudPageState<Course, CourseInput>(initialForm);
 
-  useEffect(() => {
-    void loadCourses(page, limit);
-  }, [page, limit]);
-
-  async function loadCourses(pageNum: number, pageLimit: number) {
+  const loadCourses = useCallback(async (pageNum: number, pageLimit: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -73,7 +67,11 @@ export default function CoursesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [setCourses, setError, setLoading, setTotal, setTotalPages]);
+
+  useEffect(() => {
+    void loadCourses(page, limit);
+  }, [loadCourses, page, limit]);
 
   function resetForm() {
     setForm(initialForm);
@@ -544,55 +542,16 @@ export default function CoursesPage() {
                     </article>
                   ))}
 
-                  {/* Pagination Controls */}
-                  <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <p className="text-sm font-medium text-slate-700">
-                        Mostrando {(page - 1) * limit + 1} a {Math.min(page * limit, total)} de {total} cursos
-                      </p>
-
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          disabled={page === 1 || loading}
-                          onClick={() => setPage(page - 1)}
-                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          ← Anterior
-                        </button>
-
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: totalPages }).map((_, index) => {
-                            const pageNum = index + 1;
-                            return (
-                              <button
-                                key={pageNum}
-                                type="button"
-                                disabled={loading}
-                                onClick={() => setPage(pageNum)}
-                                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
-                                  pageNum === page
-                                    ? 'bg-emerald-600 text-white'
-                                    : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100'
-                                } disabled:cursor-not-allowed disabled:opacity-50`}
-                              >
-                                {pageNum}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        <button
-                          type="button"
-                          disabled={page === totalPages || loading}
-                          onClick={() => setPage(page + 1)}
-                          className="rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          Siguiente →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  <PaginationControls
+                    entityName="cursos"
+                    loading={loading}
+                    page={page}
+                    limit={limit}
+                    total={total}
+                    totalPages={totalPages}
+                    activePageClassName="bg-emerald-600 text-white"
+                    onPageChange={setPage}
+                  />
                 </div>
               ) : null}
             </article>
@@ -600,74 +559,5 @@ export default function CoursesPage() {
         </div>
       </AppShell>
     </ProtectedRoute>
-  );
-}
-
-function SectionTitle({ children }: Readonly<{ children: ReactNode }>) {
-  return (
-    <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
-      {children}
-    </p>
-  );
-}
-
-function Field({ children }: Readonly<{ children: ReactNode }>) {
-  return <div className="flex flex-col gap-2">{children}</div>;
-}
-
-function Label({
-  children,
-  htmlFor,
-}: Readonly<{
-  children: ReactNode;
-  htmlFor: string;
-}>) {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500"
-    >
-      {children}
-    </label>
-  );
-}
-
-function Input(props: Readonly<InputHTMLAttributes<HTMLInputElement>>) {
-  return (
-    <input
-      {...props}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-400"
-    />
-  );
-}
-
-function Select(props: Readonly<SelectHTMLAttributes<HTMLSelectElement>>) {
-  return (
-    <select
-      {...props}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-400"
-    />
-  );
-}
-
-function Info({ label, value }: Readonly<{ label: string; value: string }>) {
-  return (
-    <div className="rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200/80">
-      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
-        {label}
-      </p>
-      <p className="mt-1 text-base font-bold text-slate-900">{value}</p>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: Readonly<{ label: string; value: string }>) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3">
-      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
-        {label}
-      </p>
-      <p className="mt-2 text-sm font-bold text-slate-900">{value}</p>
-    </div>
   );
 }
