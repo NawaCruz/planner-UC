@@ -59,18 +59,18 @@ export default function SetupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-50 to-slate-100">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-50 to-slate-100 px-4">
       <div className="rounded-lg bg-white p-8 shadow-lg">
         <h1 className="mb-6 text-2xl font-bold text-slate-900">Configuración Inicial</h1>
         
         {message && (
-          <div className="mb-4 rounded-lg bg-green-50 p-4 text-green-700">
+          <div role="status" className="mb-4 rounded-lg bg-green-50 p-4 text-green-800">
             {message}
           </div>
         )}
         
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+          <div role="alert" className="mb-4 rounded-lg bg-red-50 p-4 text-red-800">
             {error}
           </div>
         )}
@@ -79,12 +79,12 @@ export default function SetupPage() {
           <button
             onClick={handleSetup}
             disabled={loading}
-            className="rounded-lg bg-sky-600 px-6 py-3 text-white hover:bg-sky-700 disabled:opacity-50"
+            className="rounded-lg bg-sky-700 px-6 py-3 font-semibold text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700 disabled:opacity-50"
           >
             {loading ? 'Creando usuario admin...' : 'Crear Usuario Admin'}
           </button>
         )}
       </div>
-    </div>
+    </main>
   );
 }

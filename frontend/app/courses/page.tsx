@@ -399,7 +399,7 @@ export default function CoursesPage() {
                       <button
                         type="submit"
                         disabled={saving}
-                        className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-44"
+                        className="rounded-2xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-44"
                       >
                         {getSaveButtonText(saving, editingId)}
                       </button>
@@ -509,7 +509,7 @@ export default function CoursesPage() {
                             <button
                               type="button"
                               onClick={() => startEditing(course)}
-                              className="rounded-2xl bg-sky-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-700"
+                              className="rounded-2xl bg-sky-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
                             >
                               Editar
                             </button>
@@ -549,7 +549,7 @@ export default function CoursesPage() {
                     limit={limit}
                     total={total}
                     totalPages={totalPages}
-                    activePageClassName="bg-emerald-600 text-white"
+                    activePageClassName="bg-emerald-700 text-white"
                     onPageChange={setPage}
                   />
                 </div>

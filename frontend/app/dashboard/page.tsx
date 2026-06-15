@@ -26,13 +26,13 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute>
       <AppShell>
-        <main className="mx-auto max-w-5xl py-4">
+        <div className="mx-auto max-w-5xl py-4">
           <div className="rounded-[32px] border border-slate-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
               <div>
-                <h2 className="text-2xl font-black text-slate-950">
+                <h1 className="text-2xl font-black text-slate-950">
                   Bienvenido, {user?.full_name}!
-                </h2>
+                </h1>
                 <p className="mt-4 text-slate-600">
                   Rol actual:{' '}
                   <span className="font-semibold text-slate-900">
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
-        </main>
+        </div>
       </AppShell>
     </ProtectedRoute>
   );

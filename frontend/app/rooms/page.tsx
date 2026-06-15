@@ -480,7 +480,7 @@ export default function RoomsPage() {
                             <button
                               type="button"
                               onClick={() => startEditing(room)}
-                              className="rounded-2xl bg-sky-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-700"
+                              className="rounded-2xl bg-sky-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
                             >
                               Editar
                             </button>

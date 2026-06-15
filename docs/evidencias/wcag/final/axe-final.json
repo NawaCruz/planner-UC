@@ -1,0 +1,454 @@
+{
+  "generatedAt": "2026-06-15T03:19:20.286Z",
+  "analyses": [
+    {
+      "route": "/login",
+      "url": "http://localhost:3000/login",
+      "violations": [],
+      "passes": 24,
+      "incomplete": 0,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Planner UC"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "aside": 0,
+          "header": 0
+        },
+        "controls": [
+          {
+            "tag": "input",
+            "id": "email",
+            "name": null,
+            "type": "email",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "password",
+            "name": null,
+            "type": "password",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          }
+        ],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 0,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/setup",
+      "url": "http://localhost:3000/setup",
+      "violations": [],
+      "passes": 16,
+      "incomplete": 0,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Configuración Inicial"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 0,
+          "aside": 0,
+          "header": 0
+        },
+        "controls": [],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 0,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/dashboard",
+      "url": "http://localhost:3000/dashboard",
+      "violations": [],
+      "passes": 21,
+      "incomplete": 1,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Bienvenido, Administrador!"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/courses",
+      "url": "http://localhost:3000/courses",
+      "violations": [],
+      "passes": 24,
+      "incomplete": 1,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Cursos de universidad"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [
+          {
+            "tag": "input",
+            "id": "code",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "name",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "cycle",
+            "name": null,
+            "type": "number",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "blocks_per_week",
+            "name": null,
+            "type": "number",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "max_sections",
+            "name": null,
+            "type": "number",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "kind",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "textarea",
+            "id": "description",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": null,
+            "name": null,
+            "type": "checkbox",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "courses-page-limit",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          }
+        ],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/rooms",
+      "url": "http://localhost:3000/rooms",
+      "violations": [],
+      "passes": 24,
+      "incomplete": 2,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Aulas y aforo"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [
+          {
+            "tag": "input",
+            "id": "name",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "location",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "capacity",
+            "name": null,
+            "type": "number",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "authorized_capacity",
+            "name": null,
+            "type": "number",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "room_type",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "is_active",
+            "name": null,
+            "type": "checkbox",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "textarea",
+            "id": "description",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "rooms-page-limit",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          }
+        ],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/users",
+      "url": "http://localhost:3000/users",
+      "violations": [],
+      "passes": 24,
+      "incomplete": 2,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Profesores y alumnos"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [
+          {
+            "tag": "input",
+            "id": "full_name",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "email",
+            "name": null,
+            "type": "email",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "password",
+            "name": null,
+            "type": "password",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "role",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "input",
+            "id": "is_active",
+            "name": null,
+            "type": "checkbox",
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "contract_type",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "category",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          },
+          {
+            "tag": "select",
+            "id": "users-page-limit",
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          }
+        ],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/schedule-generator",
+      "url": "http://localhost:3000/schedule-generator",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "Horario semanal generado desde backend"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [
+          {
+            "tag": "select",
+            "id": null,
+            "name": null,
+            "type": null,
+            "ariaLabel": null,
+            "ariaLabelledby": null,
+            "hasLabel": true
+          }
+        ],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 0
+      }
+    },
+    {
+      "route": "/green-report",
+      "url": "http://localhost:3000/green-report",
+      "violations": [],
+      "passes": 24,
+      "incomplete": 1,
+      "dom": {
+        "title": "Planner UC | Horario Semanal",
+        "h1": [
+          "⚡ Consumo de Recursos & Sostenibilidad"
+        ],
+        "landmarks": {
+          "main": 1,
+          "nav": 1,
+          "aside": 1,
+          "header": 0
+        },
+        "controls": [],
+        "unnamedControls": 0,
+        "unnamedActions": 0,
+        "currentLinks": 1,
+        "tabRoles": 3
+      }
+    }
+  ]
+}

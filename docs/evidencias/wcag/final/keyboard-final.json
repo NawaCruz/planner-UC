@@ -1,0 +1,362 @@
+{
+  "generatedAt": "2026-06-15T03:20:17.038Z",
+  "checks": [
+    {
+      "route": "/login",
+      "sequence": [
+        {
+          "tag": "input",
+          "id": "email",
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "input",
+          "id": "password",
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Iniciar sesión",
+          "href": null
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Solicita acceso",
+          "href": "mailto:admin@example.com"
+        },
+        {
+          "tag": "nextjs-portal",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "body",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Planner UCGestión inteligente de horarios universitariosCredenciales de demostraciónAdmin:admin@example.com / password12",
+          "href": null
+        },
+        {
+          "tag": "input",
+          "id": "email",
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "input",
+          "id": "password",
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        }
+      ]
+    },
+    {
+      "route": "/dashboard",
+      "sequence": [
+        {
+          "tag": "nextjs-portal",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Saltar al contenido principal",
+          "href": "#main-content"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": "page",
+          "text": "DashboardResumen del usuario",
+          "href": "/dashboard"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "CursosCRUD academico",
+          "href": "/courses"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "AulasSalones y aforo",
+          "href": "/rooms"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "UsuariosProfesores y alumnos",
+          "href": "/users"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Schedule GeneratorHorario y bloques",
+          "href": "/schedule-generator"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Green SoftwareReporte de CO2",
+          "href": "/green-report"
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Cerrar sesion",
+          "href": null
+        },
+        {
+          "tag": "body",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "self.__next_r=\"Hpoykp88MJq2SWSTom4cS\"(self.__next_f=self.__next_f||[]).push([0])self.__next_f.push([1,\"7:I[\\\"[project]/D",
+          "href": null
+        },
+        {
+          "tag": "nextjs-portal",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Saltar al contenido principal",
+          "href": "#main-content"
+        }
+      ]
+    },
+    {
+      "route": "/schedule-generator",
+      "sequence": [
+        {
+          "tag": "nextjs-portal",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "",
+          "href": null
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Saltar al contenido principal",
+          "href": "#main-content"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "DashboardResumen del usuario",
+          "href": "/dashboard"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "CursosCRUD academico",
+          "href": "/courses"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "AulasSalones y aforo",
+          "href": "/rooms"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "UsuariosProfesores y alumnos",
+          "href": "/users"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": "page",
+          "text": "Schedule GeneratorHorario y bloques",
+          "href": "/schedule-generator"
+        },
+        {
+          "tag": "a",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Green SoftwareReporte de CO2",
+          "href": "/green-report"
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Cerrar sesion",
+          "href": null
+        },
+        {
+          "tag": "select",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Todos los cursosARQ301 · Arquitectura de ComputadoresCS101 · Introduccion a la ProgramacionCS102 · Programacion Orientad",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Lun",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Mar",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Mie",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Jue",
+          "href": null
+        },
+        {
+          "tag": "button",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "Vie",
+          "href": null
+        },
+        {
+          "tag": "div",
+          "id": null,
+          "role": "region",
+          "ariaLabel": "Grilla semanal desplazable",
+          "ariaCurrent": null,
+          "text": "HoraLunMarMieJueVie07:00-08:30CS102Programacion Orientada a ObjetosSec. 1 · Aula 102ARQ301Arquitectura de ComputadoresSe",
+          "href": null
+        },
+        {
+          "tag": "div",
+          "id": null,
+          "role": "region",
+          "ariaLabel": "Lista de secciones activas desplazable",
+          "ariaCurrent": null,
+          "text": "ARQ301Arquitectura de ComputadoresSeccion 1Ciclo 4 · Carrera · Aula 102Jue 10:20-11:50 · Jue 12:00-13:30ARQ301Arquitectu",
+          "href": null
+        },
+        {
+          "tag": "body",
+          "id": null,
+          "role": null,
+          "ariaLabel": null,
+          "ariaCurrent": null,
+          "text": "self.__next_r=\"dgeghi_f1M-J1Co2PIhq5\"(self.__next_f=self.__next_f||[]).push([0])self.__next_f.push([1,\"7:I[\\\"[project]/D",
+          "href": null
+        }
+      ]
+    }
+  ]
+}

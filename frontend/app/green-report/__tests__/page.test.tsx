@@ -14,7 +14,7 @@ describe('GreenReportPage', () => {
   it('muestra por defecto la vista optimizada', () => {
     render(<GreenReportPage />)
 
-    fireEvent.click(screen.getAllByRole('button', { name: /después/i })[1])
+    fireEvent.click(screen.getByRole('button', { name: /despu/i }))
 
     expect(screen.getByText('153')).toBeInTheDocument()
     expect(screen.getByText(/2\.1787 MB/i)).toBeInTheDocument()
@@ -23,7 +23,7 @@ describe('GreenReportPage', () => {
   it('permite cambiar a la vista antes', () => {
     render(<GreenReportPage />)
 
-    fireEvent.click(screen.getAllByRole('button', { name: /antes/i })[1])
+    fireEvent.click(screen.getByRole('button', { name: /antes/i }))
 
     expect(screen.getByText('485')).toBeInTheDocument()
     expect(screen.getByText(/15\.5435 MB/i)).toBeInTheDocument()

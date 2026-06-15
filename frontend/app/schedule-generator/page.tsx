@@ -58,9 +58,9 @@ function slotColor(seed: string) {
 
   const hue = Math.abs(hash % 360);
   return {
-    background: `hsl(${hue} 75% 93%)`,
-    border: `hsl(${hue} 60% 48%)`,
-    accent: `hsl(${hue} 70% 30%)`,
+    background: `hsl(${hue} 72% 94%)`,
+    border: `hsl(${hue} 58% 38%)`,
+    accent: `hsl(${hue} 72% 22%)`,
   };
 }
 
@@ -377,7 +377,12 @@ function ScheduleGeneratorContent() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="Grilla semanal desplazable"
+                className="overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
+              >
                 <div className="min-w-[980px]">
                   <div
                     className="grid gap-3"
@@ -464,7 +469,12 @@ function ScheduleGeneratorContent() {
                   </p>
                 </div>
 
-                <div className="flex max-h-[720px] flex-col gap-3 overflow-y-auto pr-1">
+                <div
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Lista de secciones activas desplazable"
+                  className="flex max-h-[720px] flex-col gap-3 overflow-y-auto pr-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
+                >
                   {data.sections.map((section) => {
                     const colors = slotColor(section.label);
                     const isHighlighted = matchesFilters(section);
@@ -576,7 +586,7 @@ function FragmentRow({
                   );
                 })
               ) : (
-                <div className="flex h-full min-h-24 items-center justify-center rounded-2xl border border-dashed border-slate-200 text-xs font-medium text-slate-400">
+                <div className="flex h-full min-h-24 items-center justify-center rounded-2xl border border-dashed border-slate-300 text-xs font-medium text-slate-600">
                   Libre
                 </div>
               )}

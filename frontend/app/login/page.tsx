@@ -16,7 +16,7 @@ export default function LoginPage() {
   }, [isAuthenticated, isLoading, router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-50 to-slate-100 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-50 to-slate-100 px-4">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-black text-slate-950">Planner UC</h1>
@@ -46,6 +46,6 @@ export default function LoginPage() {
           </a>
         </p>
       </div>
-    </div>
+    </main>
   );
 }

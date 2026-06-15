@@ -1,0 +1,154 @@
+[
+  {
+    "route": "/login",
+    "finalUrl": "http://localhost:3000/login",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Planner UC"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 0,
+      "aside": 0,
+      "header": 0
+    },
+    "currentLinks": 0,
+    "tabRoles": 0
+  },
+  {
+    "route": "/setup",
+    "finalUrl": "http://localhost:3000/setup",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Configuración Inicial"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 0,
+      "aside": 0,
+      "header": 0
+    },
+    "currentLinks": 0,
+    "tabRoles": 0
+  },
+  {
+    "route": "/dashboard",
+    "finalUrl": "http://localhost:3000/dashboard",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Bienvenido, Administrador!"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 0
+  },
+  {
+    "route": "/courses",
+    "finalUrl": "http://localhost:3000/courses",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Cursos de universidad"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 0
+  },
+  {
+    "route": "/rooms",
+    "finalUrl": "http://localhost:3000/rooms",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Aulas y aforo"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 0
+  },
+  {
+    "route": "/users",
+    "finalUrl": "http://localhost:3000/users",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Profesores y alumnos"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 0
+  },
+  {
+    "route": "/schedule-generator",
+    "finalUrl": "http://localhost:3000/schedule-generator",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "Horario semanal generado desde backend"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 0
+  },
+  {
+    "route": "/green-report",
+    "finalUrl": "http://localhost:3000/green-report",
+    "violations": 0,
+    "ids": [],
+    "h1": [
+      "⚡ Consumo de Recursos & Sostenibilidad"
+    ],
+    "unnamedControls": 0,
+    "unnamedActions": 0,
+    "landmarks": {
+      "main": 1,
+      "nav": 1,
+      "aside": 1,
+      "header": 0
+    },
+    "currentLinks": 1,
+    "tabRoles": 3
+  }
+]
