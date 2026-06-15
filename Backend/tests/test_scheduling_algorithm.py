@@ -12,18 +12,30 @@ def solve_and_validate():
     return solution
 
 
+@pytest.fixture(scope="module")
+def valid_solution():
+    """Reutiliza una solucion factible para validar invariantes del solver."""
+    return solve_and_validate()
+
+
+@pytest.fixture(scope="module")
+def demo_data():
+    """Reutiliza los datos demo para validaciones estructurales."""
+    return build_demo_data()
+
+
 class TestAlgorithmValidity:
     """Tests para validar que el algoritmo encuentra soluciones válidas."""
 
-    def test_solver_finds_feasible_solution(self):
+    def test_solver_finds_feasible_solution(self, valid_solution):
         """Test que el solver encuentra una solución factible."""
-        solution = solve_and_validate()
+        solution = valid_solution
         assert solution["success"] is True
         assert len(solution["sections"]) > 0, "Debe haber al menos una sección abierta"
 
-    def test_solution_structure(self):
+    def test_solution_structure(self, valid_solution):
         """Test que la solución tiene la estructura esperada."""
-        solution = solve_and_validate()
+        solution = valid_solution
         
         # Campos principales
         assert "summary" in solution
@@ -39,9 +51,9 @@ class TestAlgorithmValidity:
         assert "uncovered_demand" in summary
         assert "excess_capacity" in summary
 
-    def test_solution_metrics_consistency(self):
+    def test_solution_metrics_consistency(self, valid_solution):
         """Test que las métricas de resumen son consistentes."""
-        solution = solve_and_validate()
+        solution = valid_solution
         summary = solution["summary"]
         
         # El número de secciones abiertas debe ser positivo
@@ -60,13 +72,13 @@ class TestAlgorithmValidity:
 class TestSchedulingConstraints:
     """Tests para validar que se cumplen las restricciones de scheduling."""
 
-    def test_no_room_conflicts(self):
+    def test_no_room_conflicts(self, valid_solution):
         """Test CRÍTICO: No debe haber conflictos de aula en el mismo horario.
         
         Una aula no puede tener dos secciones en el mismo slot de tiempo.
         Esta es la restricción más importante del algoritmo.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         # Crear índice: (aula, slot) -> lista de secciones
@@ -88,13 +100,13 @@ class TestSchedulingConstraints:
                 f"{len(sections_in_conflict)} secciones en el mismo horario"
             )
 
-    def test_max_sections_per_course(self):
+    def test_max_sections_per_course(self, valid_solution, demo_data):
         """Test: No se deben abrir más secciones que el máximo por curso.
         
         Cada curso tiene un número máximo de secciones (usualmente 2).
         """
-        solution = solve_and_validate()
-        data = build_demo_data()
+        solution = valid_solution
+        data = demo_data
         courses = data["courses"]
         sections = solution["sections"]
         
@@ -115,12 +127,12 @@ class TestSchedulingConstraints:
                 f"(máximo permitido: {max_sections})"
             )
 
-    def test_sections_open_sequentially(self):
+    def test_sections_open_sequentially(self, valid_solution):
         """Test: Si se abre sección 2, debe estar abierta sección 1.
         
         Las secciones se abren en orden: primero sec1, luego sec2, etc.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         # Agrupar por curso
@@ -142,12 +154,12 @@ class TestSchedulingConstraints:
                     f"una secuencia 1..{expected-1}"
                 )
 
-    def test_room_capacity_sufficient(self):
+    def test_room_capacity_sufficient(self, valid_solution):
         """Test: La capacidad total de aula debe ser >= demanda del curso.
         
         Los cursos abiertos deben tener suficiente capacidad para la demanda.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         demand = solution["demand_by_course"]
         
@@ -174,7 +186,7 @@ class TestSchedulingConstraints:
                         f"pero capacidad {capacity}"
                     )
 
-    def test_max_two_rooms_per_course_per_time_slot(self):
+    def test_max_two_rooms_per_course_per_time_slot(self, valid_solution):
         """Test IMPORTANTE: Un mismo curso NO puede tener más de 2 salones en el MISMO horario.
         
         Ejemplo INVÁLIDO:
@@ -186,7 +198,7 @@ class TestSchedulingConstraints:
         - MAT101 Lun 07:00 en Aula 101 (Sec 1)
         - MAT101 Lun 07:00 en Aula 102 (Sec 2)  ← OK, solo 2 aulas
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         # Crear índice: (curso, slot) -> lista de aulas
@@ -214,10 +226,10 @@ class TestSchedulingConstraints:
 class TestCourseCapacitySummary:
     """Tests para validar el resumen de capacidad por curso."""
 
-    def test_capacity_summary_completeness(self):
+    def test_capacity_summary_completeness(self, valid_solution, demo_data):
         """Test: El resumen debe incluir todos los cursos."""
-        solution = solve_and_validate()
-        data = build_demo_data()
+        solution = valid_solution
+        data = demo_data
         courses = data["courses"]
         summary = solution["course_capacity_summary"]
         
@@ -226,15 +238,15 @@ class TestCourseCapacitySummary:
             f"pero {len(courses)} cursos en datos"
         )
 
-    def test_capacity_summary_consistency(self):
+    def test_capacity_summary_consistency(self, valid_solution, demo_data):
         """Test: Los datos en el resumen deben ser consistentes.
         
         - opened_capacity >= uncovered_demand
         - opened_sections <= max_sections
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         summary = solution["course_capacity_summary"]
-        data = build_demo_data()
+        data = demo_data
         course_map = {c.code: c for c in data["courses"]}
         
         for course_data in summary:
@@ -271,9 +283,9 @@ class TestCourseCapacitySummary:
 class TestDemandCoverage:
     """Tests para validar la cobertura de demanda."""
 
-    def test_summary_demand_totals(self):
+    def test_summary_demand_totals(self, valid_solution):
         """Test: El total de demanda en el resumen es consistente."""
-        solution = solve_and_validate()
+        solution = valid_solution
         summary = solution["summary"]
         demand = solution["demand_by_course"]
         
@@ -284,9 +296,9 @@ class TestDemandCoverage:
             f"vs {expected_total} (suma de individuales)"
         )
 
-    def test_uncovered_demand_calculation(self):
+    def test_uncovered_demand_calculation(self, valid_solution):
         """Test: La demanda descubierta se calcula correctamente."""
-        solution = solve_and_validate()
+        solution = valid_solution
         summary = solution["summary"]
         course_summary = solution["course_capacity_summary"]
         
@@ -301,9 +313,9 @@ class TestDemandCoverage:
 class TestSectionValidity:
     """Tests para validar que cada sección tiene datos válidos."""
 
-    def test_sections_have_required_fields(self):
+    def test_sections_have_required_fields(self, valid_solution):
         """Test: Cada sección debe tener todos los campos requeridos."""
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         required_fields = {
@@ -324,9 +336,9 @@ class TestSectionValidity:
                     f"es {type(section[field]).__name__}"
                 )
 
-    def test_sections_have_valid_time_slots(self):
+    def test_sections_have_valid_time_slots(self, valid_solution):
         """Test: Los slots de tiempo deben ser válidos y coincidir con blocks_per_week."""
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         for section in sections:
@@ -348,11 +360,11 @@ class TestSectionValidity:
 class TestOptimizationObjective:
     """Tests para validar que el algoritmo optimiza correctamente."""
 
-    def test_prefers_fewer_sections(self):
+    def test_prefers_fewer_sections(self, valid_solution, demo_data):
         """Test: El algoritmo prefiere abrir menos secciones cuando es posible."""
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
-        data = build_demo_data()
+        data = demo_data
         courses = data["courses"]
         
         # Contar secciones por curso
@@ -389,13 +401,13 @@ class TestOptimizationObjective:
 class TestAdditionalConstraints:
     """Tests adicionales para validar restricciones importantes."""
 
-    def test_no_student_double_enrollment(self):
+    def test_no_student_double_enrollment(self, valid_solution):
         """Test: Un estudiante NO puede estar en dos secciones del MISMO curso.
         
         Esto es teórico en nuestro modelo porque no simulamos matricula,
         pero es importante para la lógica real.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         # Validar que no hay dos secciones del mismo curso con horarios superpuestos
@@ -411,12 +423,12 @@ class TestAdditionalConstraints:
             # Simplemente verificar que hay múltiples secciones si es necesario
             assert len(course_sections) > 0
 
-    def test_room_used_efficiently(self):
+    def test_room_used_efficiently(self, valid_solution):
         """Test: Las aulas usadas deben ser aprovechadas razonablemente.
         
         Una aula usada debe tener al menos 1 sección (obviamente).
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         rooms = solution["rooms"]
         
@@ -433,12 +445,12 @@ class TestAdditionalConstraints:
                 f"Aula {room_used} usada pero no existe en configuración"
             )
 
-    def test_pattern_consistency_across_sections(self):
+    def test_pattern_consistency_across_sections(self, valid_solution):
         """Test: Los patrones de horario deben ser válidos y consistentes.
         
         Por ejemplo, un patrón de 3 bloques debe ser válido (ej: Lun+Mie+Vie).
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         for section in sections:
@@ -463,12 +475,12 @@ class TestAdditionalConstraints:
                 
                 assert "-" in time_range, f"Rango de hora inválido en slot: {time_range}"
 
-    def test_section_numbering_logical(self):
+    def test_section_numbering_logical(self, valid_solution):
         """Test: Los números de sección deben ser lógicos (1, 2, etc).
         
         No puede haber sección 0 o números negativos.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         for section in sections:
@@ -480,12 +492,12 @@ class TestAdditionalConstraints:
                 f"Número de sección debe ser entero, es {type(section_number)}"
             )
 
-    def test_no_empty_sections(self):
+    def test_no_empty_sections(self, valid_solution):
         """Test: Una sección abierta debe tener capacidad > 0.
         
         No tiene sentido abrir una sección en un aula sin capacidad.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         for section in sections:
@@ -494,12 +506,12 @@ class TestAdditionalConstraints:
                 f"{section['label']}: Capacidad {capacity} (debe ser > 0)"
             )
 
-    def test_cycle_assignment_logical(self):
+    def test_cycle_assignment_logical(self, valid_solution):
         """Test: El ciclo de cada curso debe ser lógico (1-8).
         
         Los ciclos van de 1 a 8 típicamente en una carrera de 4 años.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         sections = solution["sections"]
         
         for section in sections:
@@ -508,13 +520,13 @@ class TestAdditionalConstraints:
                 f"{section['label']}: Ciclo {cycle} inválido (debe estar entre 1-10)"
             )
 
-    def test_demand_logic_consistency(self):
+    def test_demand_logic_consistency(self, valid_solution):
         """Test: La lógica de demanda es consistente.
         
         - Demanda debe ser >= 0
         - Total abierto debe poder satisfacer demanda en el mejor caso
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         demand = solution["demand_by_course"]
         
         for course_code, demand_count in demand.items():
@@ -522,12 +534,12 @@ class TestAdditionalConstraints:
                 f"Curso {course_code}: Demanda negativa: {demand_count}"
             )
 
-    def test_summary_math_correct(self):
+    def test_summary_math_correct(self, valid_solution):
         """Test: Las matemáticas del resumen son correctas.
         
         Validar operaciones aritméticas principales.
         """
-        solution = solve_and_validate()
+        solution = valid_solution
         summary = solution["summary"]
         course_summary = solution["course_capacity_summary"]
         
