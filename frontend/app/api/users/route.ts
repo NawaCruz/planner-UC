@@ -8,7 +8,29 @@ import {
 } from '../_shared/admin-mutations';
 
 const allowedRoles = ['profesor', 'alumno'] as const;
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const maxEmailLength = 254;
+
+function isValidEmail(email: string) {
+  if (email.length === 0 || email.length > maxEmailLength) {
+    return false;
+  }
+
+  if (email !== email.trim() || email.includes(' ')) {
+    return false;
+  }
+
+  const emailParts = email.split('@');
+  if (emailParts.length !== 2) {
+    return false;
+  }
+
+  const [localPart, domain] = emailParts;
+  if (!localPart || !domain || domain.startsWith('.') || domain.endsWith('.')) {
+    return false;
+  }
+
+  return domain.split('.').every((segment) => segment.length > 0);
+}
 
 function optionalString(value: unknown) {
   if (typeof value !== 'string') {
@@ -45,7 +67,7 @@ function normalizeCreatePayload(payload: Record<string, unknown>) {
     return { error: 'El nombre completo es obligatorio' };
   }
 
-  if (!emailPattern.test(email)) {
+  if (!isValidEmail(email)) {
     return { error: 'El correo electronico no es valido' };
   }
 
