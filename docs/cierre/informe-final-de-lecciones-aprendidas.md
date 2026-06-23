@@ -7,159 +7,254 @@
 | Proyecto | Planner-UC |
 | Equipo | Grupo 05 |
 | Fecha del informe | 22 de junio de 2026 |
+| Estado evaluado | Cierre del MVP |
 | Fuente principal | Repositorio `planner-UC`, rama `main` |
 | Corte de evidencia | Commit `83dd8b2`, 15 de junio de 2026 |
 
 ## 1. Propósito
 
-Este informe consolida los aprendizajes técnicos y de gestión obtenidos durante el desarrollo de Planner-UC. Las lecciones se derivan de la evolución del repositorio, los backlogs, las correcciones de calidad y seguridad, las pruebas automatizadas y las evaluaciones de accesibilidad y usabilidad.
+Este informe consolida las lecciones aprendidas durante el desarrollo de Planner-UC. Su finalidad es identificar:
+
+- prácticas que produjeron resultados favorables;
+- inconvenientes encontrados y solucionados durante la ejecución;
+- acciones que conviene repetir en futuros proyectos;
+- oportunidades de mejora para una siguiente fase.
+
+Las conclusiones se sustentan en el historial del repositorio, las pruebas automatizadas y las evaluaciones de SonarQube, OWASP, WCAG y SUS.
+
+---
 
 ## 2. Prácticas que funcionaron bien
 
-### 2.1. Separar gestión y optimización
+### 2.1. Mantener separadas la gestión y la optimización
 
-**Situación:** El proyecto necesitaba combinar autenticación, persistencia, interfaces administrativas y optimización matemática.
+**Situación:** El proyecto requería autenticación, persistencia, interfaces administrativas y un motor de optimización matemática.
 
-**Resultado:** Mantener Supabase y Next.js para la gestión, y FastAPI con OR-Tools para el solver, evitó mezclar responsabilidades y permitió probar cada capa de manera independiente.
+**Práctica aplicada:** El frontend con Next.js y Supabase asumió la autenticación y gestión administrativa, mientras que FastAPI y OR-Tools CP-SAT quedaron a cargo de la generación de horarios.
 
-**Lección:** En sistemas que combinan CRUD y optimización, la separación por capacidades reduce acoplamiento y facilita la evolución.
+**Resultado:** Las dos capas pudieron evolucionar y probarse de manera independiente sin trasladar la lógica del solver al frontend.
 
-**Aplicación futura:** Conservar contratos API explícitos y adaptar los datos persistidos a las entradas del solver sin trasladar la optimización al frontend.
+**Lección aprendida:** La separación de responsabilidades reduce el acoplamiento y facilita el mantenimiento de sistemas que combinan gestión de datos y optimización.
 
-### 2.2. Modelar restricciones explícitamente
+### 2.2. Modelar las restricciones de forma explícita
 
-**Situación:** La generación de horarios incluye restricciones duras y objetivos que compiten entre sí.
+**Situación:** La generación de horarios incluye decisiones combinatorias y restricciones que compiten entre sí.
 
-**Resultado:** CP-SAT permitió representar choques de aula, máximos de secciones, continuidad de numeración, demanda no cubierta, exceso de capacidad y conveniencia horaria.
+**Práctica aplicada:** Se utilizaron variables, restricciones duras y una función objetivo ponderada dentro de CP-SAT.
 
-**Lección:** Un problema combinatorio debe resolverse mediante un modelo formal y verificable, no con reglas manuales dispersas.
+**Resultado:** El solver pudo controlar choques de aula, máximos de secciones, continuidad de numeración, demanda no cubierta, exceso de capacidad y conveniencia horaria.
 
-**Aplicación futura:** Incorporar docentes, disponibilidad y matrícula mediante nuevas variables y restricciones documentadas.
+**Lección aprendida:** Un problema complejo de horarios debe representarse mediante reglas formales, verificables y probadas, en lugar de depender de decisiones manuales dispersas.
 
-### 2.3. Convertir hallazgos de calidad en cambios verificables
+### 2.3. Combinar diferentes niveles de pruebas
 
-**Situación:** La línea base de SonarQube mostraba 120 issues, 6.1% de duplicación, 434 minutos de deuda y cobertura no importada.
+**Situación:** Las pruebas unitarias no cubrían por sí solas la integración, navegación, accesibilidad o experiencia de usuario.
 
-**Resultado:** Las correcciones redujeron los issues y la deuda abierta a cero, eliminaron la duplicación y elevaron la cobertura reportada a 80.1%.
+**Práctica aplicada:** Se combinaron Jest, React Testing Library, MSW, pytest, Cypress, Axe, revisión por teclado y SUS.
 
-**Lección:** Las herramientas de calidad aportan valor cuando cada hallazgo se vincula con una corrección, una prueba y evidencia antes/después.
+**Resultado:** Se validaron componentes, rutas API, reglas del solver, flujos completos y aspectos no funcionales.
 
-**Aplicación futura:** Ejecutar quality gates desde el inicio de cada iteración.
+**Lección aprendida:** La calidad del producto debe evaluarse desde varias perspectivas: funcionamiento, integración, seguridad, accesibilidad y usabilidad.
 
-### 2.4. Probar la lógica y la experiencia
+### 2.4. Utilizar métricas antes y después
 
-**Situación:** Las pruebas unitarias no cubren por sí solas errores de navegación, accesibilidad o comprensión.
+**Situación:** Era necesario demostrar que las mejoras realizadas producían resultados reales.
 
-**Resultado:** La combinación de Jest, React Testing Library, pytest, Cypress, Axe, revisión por teclado y SUS produjo una evaluación integral.
+**Práctica aplicada:** Se conservaron líneas base y resultados finales de cobertura, deuda técnica, duplicación, seguridad y accesibilidad.
 
-**Lección:** La calidad incluye corrección técnica, seguridad, accesibilidad y usabilidad.
+**Resultado:** Fue posible demostrar mejoras cuantitativas, como:
 
-**Aplicación futura:** Mantener pruebas unitarias, de integración, E2E y validaciones no funcionales.
+- cobertura SonarQube de 0.0% reportado a 80.1%;
+- issues abiertos de 120 a 0;
+- duplicación de 6.1% a 0.0%;
+- deuda técnica de 434 minutos a 0;
+- violaciones Axe de 8 a 0;
+- vulnerabilidades productivas npm de 3 a 0.
 
-### 2.5. Documentar evidencia reproducible
+**Lección aprendida:** Las métricas comparativas permiten verificar el impacto de una corrección y facilitan la trazabilidad del cierre.
 
-**Situación:** Los resultados debían ser verificables y no depender únicamente de afirmaciones.
+### 2.5. Versionar evidencias reproducibles
 
-**Resultado:** Se versionaron reportes JSON, CSV, logs, capturas y comandos de ejecución.
+**Situación:** Los resultados técnicos debían poder revisarse después de su ejecución.
 
-**Lección:** La evidencia estructurada mejora la trazabilidad y facilita auditorías posteriores.
+**Práctica aplicada:** Se almacenaron reportes JSON, CSV, logs, capturas y comandos de validación.
 
-**Aplicación futura:** Asociar cada métrica con fecha, versión, comando y entorno de ejecución.
+**Resultado:** Las afirmaciones de calidad, seguridad, accesibilidad y usabilidad quedaron respaldadas por evidencia consultable.
 
-## 3. Prácticas insuficientes y acciones correctivas
+**Lección aprendida:** Una evidencia reproducible tiene más valor que una conclusión sin fuente, fecha ni método de obtención.
 
-### 3.1. Backlog desalineado del estado real
+---
 
-**Problema:** Los documentos de Sprint 1 y Sprint 2 conservan tareas en progreso o pendientes que posteriormente fueron implementadas total o parcialmente.
+## 3. Inconvenientes encontrados y soluciones aplicadas
 
-**Impacto:** No se puede reconstruir con precisión el cronograma ni calcular la velocidad final.
+Esta sección presenta únicamente inconvenientes que aparecieron durante el proyecto y que cuentan con una solución aplicada y verificable.
 
-**Acción correctiva:** Actualizar cada historia al cerrar el cambio funcional y vincularla con commits, pruebas y evidencia.
+### 3.1. Cobertura no visible en SonarQube
 
-### 3.2. Registro parcial de costos
+**Inconveniente:** El proyecto tenía pruebas automatizadas, pero SonarQube mostraba 0.0% de cobertura porque no recibía los reportes generados por Jest y pytest-cov.
 
-**Problema:** El costo real acumulado se detiene el 4 de mayo de 2026.
+**Solución aplicada:** Se configuraron las rutas de `frontend/coverage/lcov.info` y `Backend/coverage.xml`, y se incorporó la generación de ambos reportes antes del análisis.
 
-**Impacto:** No puede determinarse el costo final ni la variación respecto del presupuesto.
+**Resultado:** SonarQube pasó a reportar una cobertura global de 80.1%.
 
-**Acción correctiva:** Actualizar costos al final de cada sprint e indicar moneda, fuente, responsable y fecha de corte.
+**Lección aprendida:** No basta con ejecutar pruebas; también debe verificarse que las herramientas de análisis importen correctamente sus resultados.
 
-### 3.3. Integración tardía de datos reales
+### 3.2. SonarQube local inaccesible desde el runner
 
-**Problema:** Los CRUD persistidos y el solver demo evolucionaron como flujos paralelos.
+**Inconveniente:** El runner hospedado de GitHub Actions no podía acceder al servidor SonarQube ejecutado en `localhost:9000`.
 
-**Impacto:** El sistema administra cursos y aulas, pero el solver no utiliza directamente esos datos.
+**Solución aplicada:** Se configuró un runner self-hosted en Windows y una instalación explícita de SonarScanner.
 
-**Acción correctiva:** Definir un contrato de entrada común y una capa adaptadora entre Supabase y el backend.
+**Resultado:** El workflow pudo ejecutar el análisis sobre el servidor local y obtener un Quality Gate aprobado.
 
-### 3.4. Calidad avanzada incorporada cerca del cierre
+**Lección aprendida:** La automatización debe diseñarse considerando la ubicación y conectividad real de los servicios utilizados.
 
-**Problema:** La línea base presentó duplicación, deuda técnica, cobertura no reportada y vulnerabilidades que requirieron una fase intensiva de corrección.
+### 3.3. Duplicación en pantallas CRUD y rutas administrativas
 
-**Impacto:** Aumentó el esfuerzo final y el riesgo de regresión.
+**Inconveniente:** Los módulos de usuarios, cursos y aulas repetían estructuras de formularios, paginación, autenticación y manejo de respuestas.
 
-**Acción correctiva:** Establecer desde el primer sprint umbrales de lint, pruebas, cobertura, dependencias y seguridad en CI.
+**Solución aplicada:** Se extrajeron componentes visuales reutilizables y helpers administrativos compartidos.
 
-### 3.5. Riesgos sin cierre formal
+**Resultado:** La duplicación reportada por SonarQube se redujo de 6.1% a 0.0%.
 
-**Problema:** El registro conserva todos los riesgos como activos, aunque algunos fueron mitigados o materializados.
+**Lección aprendida:** La reutilización debe introducirse cuando existe repetición demostrable, sin realizar refactorizaciones amplias sin necesidad.
 
-**Impacto:** No refleja el riesgo residual real ni la eficacia de las respuestas.
+### 3.4. Configuración inicial con exposición innecesaria
 
-**Acción correctiva:** Revisar por sprint la probabilidad, impacto, responsable, respuesta, evidencia y estado de cada riesgo.
+**Inconveniente:** La configuración inicial utilizaba una credencial hardcodeada y el endpoint de setup no contaba con un secreto adicional.
 
-### 3.6. Rutas y nomenclatura documental inconsistentes
+**Solución aplicada:** Las credenciales se trasladaron a variables de entorno y el setup pasó a exigir un token enviado mediante header.
 
-**Problema:** Algunos documentos usan `backend/` y otros `Backend/`, además de enlaces absolutos procedentes de otros entornos.
+**Resultado:** El issue de seguridad fue eliminado y el Security Rating de SonarQube mejoró de C a A.
 
-**Impacto:** Disminuye la portabilidad y puede romper enlaces.
+**Lección aprendida:** Los secretos no deben permanecer en el código y los procesos de inicialización deben fallar de forma cerrada cuando falta configuración segura.
 
-**Acción correctiva:** Usar enlaces relativos, respetar las mayúsculas de las carpetas y validar enlaces automáticamente.
+### 3.5. Validaciones administrativas insuficientes
+
+**Inconveniente:** El parseo directo de JSON y algunas validaciones débiles podían producir errores no controlados o datos inconsistentes.
+
+**Solución aplicada:** Se incorporaron:
+
+- parseo controlado de JSON;
+- validación de correo y contraseña;
+- verificación de roles e identificadores;
+- control del aforo autorizado respecto de la capacidad física;
+- validación de perfil administrativo activo.
+
+**Resultado:** Las rutas administrativas responden de forma controlada y las validaciones quedaron cubiertas por pruebas.
+
+**Lección aprendida:** La validación debe realizarse en servidor, aunque la interfaz también controle los datos.
+
+### 3.6. Configuración CORS y manejo de excepciones demasiado amplios
+
+**Inconveniente:** El backend permitía métodos y headers CORS innecesariamente amplios y podía devolver detalles internos del solver.
+
+**Solución aplicada:** Se restringieron orígenes, métodos y headers, y se reemplazaron los detalles internos por mensajes genéricos para el cliente.
+
+**Resultado:** Las pruebas confirmaron el acceso desde el origen permitido y la ausencia de autorización CORS para orígenes no admitidos.
+
+**Lección aprendida:** Una API debe exponer únicamente las capacidades necesarias y separar los mensajes de usuario de los detalles internos de diagnóstico.
+
+### 3.7. Dependencias productivas con vulnerabilidades
+
+**Inconveniente:** `npm audit --omit=dev` detectó tres vulnerabilidades productivas: una alta y dos moderadas.
+
+**Solución aplicada:** Se actualizó Next.js y se fijaron versiones seguras para dependencias transitivas.
+
+**Resultado:** La auditoría productiva final reportó cero vulnerabilidades.
+
+**Lección aprendida:** La revisión de dependencias debe formar parte del control de calidad y repetirse después de cada actualización relevante.
+
+### 3.8. Problemas de accesibilidad en contraste y navegación
+
+**Inconveniente:** La evaluación inicial con Axe detectó ocho violaciones relacionadas principalmente con contraste y regiones desplazables no accesibles mediante teclado.
+
+**Solución aplicada:** Se ajustaron colores, foco visible, landmarks, encabezados, regiones, etiquetas y roles ARIA.
+
+**Resultado:** Las ocho rutas evaluadas finalizaron con cero violaciones automáticas y con navegación por teclado validada.
+
+**Lección aprendida:** La accesibilidad debe evaluarse sobre la aplicación en funcionamiento y no únicamente mediante revisión visual.
+
+### 3.9. Cypress bloqueado por una variable del entorno
+
+**Inconveniente:** La variable global `ELECTRON_RUN_AS_NODE=1` causaba errores como `bad option: --smoke-test` e impedía verificar Cypress.
+
+**Solución aplicada:** Los scripts del proyecto eliminan esa variable antes de instalar, verificar o ejecutar Cypress.
+
+**Resultado:** Cypress 13.17.0 quedó verificado y las tres pruebas E2E finalizaron sin fallos.
+
+**Lección aprendida:** Los scripts de pruebas deben controlar las particularidades conocidas del entorno para facilitar ejecuciones repetibles.
+
+### 3.10. Fricciones de comprensión identificadas mediante SUS
+
+**Inconveniente:** Los participantes señalaron nomenclatura en inglés, poca información durante la carga y reglas de contraseña poco visibles.
+
+**Solución aplicada:** Se renombró el módulo como `Generador de horarios`, se agregó el mensaje `Cargando acceso...`, se hizo visible la ayuda de contraseña y se mejoraron los estados de éxito y error.
+
+**Resultado:** La interfaz quedó más clara y el estudio SUS registró un promedio de 81.56/100, correspondiente a una aceptabilidad alta.
+
+**Lección aprendida:** Las pruebas con usuarios permiten descubrir fricciones que no aparecen en análisis estáticos ni pruebas unitarias.
+
+---
 
 ## 4. Lecciones técnicas consolidadas
 
-| ID | Lección | Evidencia | Recomendación |
+| ID | Lección | Evidencia | Aplicación futura |
 | --- | --- | --- | --- |
-| LT-01 | La separación frontend/backend mantuvo responsabilidades claras. | Arquitectura y READMEs | Definir límites antes de implementar. |
-| LT-02 | CP-SAT es adecuado para restricciones académicas combinatorias. | Solver y pruebas backend | Mantener restricciones explícitas. |
-| LT-03 | Generar cobertura no basta; debe importarse correctamente. | SonarQube: 0.0% a 80.1% | Verificar herramientas en CI. |
-| LT-04 | Extraer patrones repetidos reduce deuda. | Duplicación: 6.1% a 0.0% | Refactorizar repetición demostrable. |
-| LT-05 | La autorización debe validarse en servidor. | Rutas API administrativas | No confiar solo en la UI. |
-| LT-06 | La configuración sensible debe fallar de forma cerrada. | Setup protegido | Validar secretos obligatorios. |
-| LT-07 | La accesibilidad mejora la claridad general. | Axe: 8 a 0 violaciones | Evaluar teclado y contraste por sprint. |
-| LT-08 | Las pruebas con usuarios detectan fricciones no técnicas. | SUS 81.56 | Evaluar usabilidad antes del cierre. |
-| LT-09 | Un demo no demuestra escalabilidad institucional. | Sin pruebas de carga reales | Probar datasets crecientes. |
-| LT-10 | La documentación debe evolucionar con el código. | Backlogs y costos desactualizados | Incluirla en Definition of Done. |
+| LT-01 | La separación entre frontend y solver facilita el mantenimiento. | Arquitectura y pruebas independientes | Conservar contratos API explícitos. |
+| LT-02 | CP-SAT es adecuado para restricciones académicas combinatorias. | Solver y 39 pruebas backend | Incorporar nuevas reglas como restricciones formales. |
+| LT-03 | La integración entre herramientas debe validarse de extremo a extremo. | Cobertura SonarQube de 0.0% a 80.1% | Verificar reportes dentro de CI. |
+| LT-04 | La reutilización reduce deuda cuando parte de repetición comprobada. | Duplicación de 6.1% a 0.0% | Extraer componentes y helpers comunes. |
+| LT-05 | La autorización y validación pertenecen al servidor. | Rutas administrativas reforzadas | Mantener controles en cada operación sensible. |
+| LT-06 | La configuración sensible debe fallar de forma cerrada. | Setup protegido y credenciales externas | Validar secretos obligatorios por entorno. |
+| LT-07 | Las dependencias también forman parte de la superficie de seguridad. | Auditoría productiva de 3 a 0 vulnerabilidades | Automatizar auditorías periódicas. |
+| LT-08 | La accesibilidad requiere herramientas automáticas y revisión manual. | Axe y validación por teclado | Evaluar nuevas vistas antes de liberarlas. |
+| LT-09 | Las pruebas E2E deben ser reproducibles y aisladas. | Cypress verificado y bypass exclusivo de E2E | Mantener configuraciones separadas de producción. |
+| LT-10 | La usabilidad se mejora escuchando a usuarios representativos. | SUS 81.56/100 y mejoras aplicadas | Repetir evaluaciones en nuevas fases. |
 
 ## 5. Lecciones de gestión consolidadas
 
-| ID | Lección | Consecuencia | Mejora propuesta |
+| ID | Lección | Resultado observado | Recomendación |
 | --- | --- | --- | --- |
-| LG-01 | El backlog debe cerrarse con evidencia. | Estados desactualizados | Vincular historia, commit y prueba. |
-| LG-02 | Los costos requieren actualización periódica. | Costo final no calculable | Registrar costo por sprint. |
-| LG-03 | Los riesgos deben revisarse durante la ejecución. | Todos permanecen activos | Cerrar o aceptar con evidencia. |
-| LG-04 | El MVP debe distinguirse del producto final. | Posible confusión de alcance | Publicar matriz dentro/fuera. |
-| LG-05 | La calidad temprana reduce correcciones tardías. | Saneamiento intensivo al final | Aplicar gates desde el inicio. |
-| LG-06 | Las decisiones técnicas deben reflejarse en gestión. | Código y planificación desalineados | Revisar documentos en retrospectivas. |
+| LG-01 | Los hallazgos deben convertirse en acciones verificables. | Cada mejora principal cuenta con evidencia antes/después. | Vincular hallazgo, responsable, corrección y validación. |
+| LG-02 | La evidencia debe recopilarse durante el trabajo. | JSON, CSV, logs y capturas facilitaron el cierre. | Definir evidencias desde la planificación. |
+| LG-03 | La calidad debe tratarse como actividad continua. | Las correcciones permitieron aprobar el Quality Gate. | Ejecutar análisis en cada iteración. |
+| LG-04 | Un MVP necesita límites explícitos. | El resultado demuestra generación demo sin afirmar integración institucional. | Mantener una matriz de alcance incluido y excluido. |
+| LG-05 | Los inconvenientes de entorno deben documentarse. | La solución de Cypress y SonarQube quedó reproducible. | Registrar causa, solución y comando de validación. |
+| LG-06 | Las retrospectivas deben producir mejoras concretas. | Las observaciones SUS generaron cambios visibles en la interfaz. | Asignar acciones y verificar su implementación. |
 
-## 6. Acciones recomendadas
+## 6. Prácticas recomendadas para futuros proyectos
 
-| Prioridad | Acción | Resultado esperado |
+1. Configurar desde el inicio lint, pruebas, cobertura y análisis de seguridad.
+2. Verificar que las métricas sean importadas correctamente por las herramientas.
+3. Mantener secretos fuera del código y validar su presencia al iniciar.
+4. Aplicar autorización y validación nuevamente en servidor.
+5. Registrar inconvenientes con fecha, impacto, solución y evidencia.
+6. Incluir accesibilidad y usabilidad dentro de cada iteración.
+7. Conservar evidencia antes y después de las correcciones.
+8. Mantener separado el entorno E2E del entorno productivo.
+9. Actualizar la documentación cuando cambie el comportamiento.
+10. Evitar afirmar capacidades que todavía no forman parte del MVP.
+
+## 7. Oportunidades para una siguiente fase
+
+Estas oportunidades no se presentan como inconvenientes corregidos, sino como ampliaciones posteriores al alcance actual:
+
+| Prioridad | Oportunidad | Resultado esperado |
 | --- | --- | --- |
-| Alta | Crear el contrato entre Supabase y el solver. | Sustituir los datos demo. |
-| Alta | Cerrar backlog, riesgos y costos. | Recuperar trazabilidad administrativa. |
-| Alta | Incorporar docentes, disponibilidad y matrícula. | Acercar el MVP al objetivo institucional. |
-| Alta | Automatizar lint, pruebas, cobertura y auditoría en CI. | Evitar regresiones. |
-| Media | Probar rendimiento con datasets crecientes. | Conocer límites del solver. |
-| Media | Activar MFA y monitoreo centralizado. | Reducir riesgo operativo. |
-| Media | Automatizar Axe en CI. | Evitar regresiones WCAG. |
-| Baja | Corregir enlaces y nombres de carpetas. | Mejorar portabilidad documental. |
+| Alta | Integrar Supabase con las entradas del solver. | Generar horarios desde datos persistidos. |
+| Alta | Incorporar docentes y disponibilidad. | Controlar conflictos docentes. |
+| Alta | Incorporar matrícula individual. | Evaluar cruces por estudiante. |
+| Media | Ejecutar pruebas de rendimiento con datasets crecientes. | Conocer límites operativos del solver. |
+| Media | Activar MFA y monitoreo centralizado. | Reforzar la operación administrativa. |
+| Media | Automatizar Axe dentro de CI. | Prevenir regresiones de accesibilidad. |
+| Baja | Crear un onboarding para primer uso. | Facilitar la adopción de nuevos usuarios. |
 
-## 7. Conclusión
+## 8. Conclusión
 
-La principal fortaleza del proyecto fue demostrar que la arquitectura y el enfoque de optimización son viables, medibles y mantenibles. La principal debilidad fue la desalineación entre el avance técnico y algunos registros de gestión.
+Planner-UC demostró que los inconvenientes encontrados durante el desarrollo pudieron convertirse en mejoras concretas y verificables. Los principales aprendizajes se relacionan con integración de herramientas, seguridad de configuración, validación en servidor, reutilización de componentes, accesibilidad y pruebas con usuarios.
 
-Para futuros proyectos, el equipo debe conservar la separación arquitectónica, el modelado formal, las pruebas automatizadas y la evidencia reproducible. El backlog, los riesgos, los costos y la documentación deben tratarse como componentes activos del producto y actualizarse con la misma disciplina que el código.
+La experiencia confirma que una práctica se transforma en lección aprendida cuando el equipo identifica la situación, aplica una solución, valida el resultado y documenta cómo evitar o resolver el mismo inconveniente en proyectos futuros.
 
 ## Referencias internas
 
@@ -167,13 +262,9 @@ Para futuros proyectos, el equipo debe conservar la separación arquitectónica,
 - `SPEC.md`
 - `frontend/README.md`
 - `Backend/README.md`
-- `docs/inicio/Project Charter.md`
-- `docs/planificacion/Backlog del Sprint 1.md`
-- `docs/planificacion/Backlog del Sprint 2.md`
-- `docs/planificacion/Costo acumulado del proyecto.md`
-- `docs/planificacion/Riesgos del proyecto.md`
 - `docs/sonarqube.md`
 - `docs/owasp.md`
 - `docs/wcag.md`
 - `docs/sus.md`
+- `docs/rubrica-cumplimiento.md`
 - `docs/evidencias/README.md`
